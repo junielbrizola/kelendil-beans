@@ -1,16 +1,13 @@
+// src/app/admin/products/create/loading.tsx
 'use client';
 import React from 'react';
 import Container from '@mui/material/Container';
-import Skeleton from '@mui/material/Skeleton';
+import ProductFormSkeleton from '@/components/ui/Skeleton/ProductFormSkeleton';
 
-export default function AdminProductCreateLoading() {
+export default function AdminCreateProductLoading() {
   return (
-    <Container maxWidth="md" sx={{ py:4 }}>
-      <Skeleton variant="text" width="40%" height={32} sx={{ mb:2 }} />
-      <Skeleton variant="rectangular" height={56} sx={{ mb:2 }} />
-      <Skeleton variant="rectangular" height={56} sx={{ mb:2 }} />
-      <Skeleton variant="rectangular" height={56} sx={{ mb:2 }} />
-      <Skeleton variant="rectangular" height={36} width={120} />
+    <Container maxWidth="sm" sx={{ py: 4 }}>
+      <ProductFormSkeleton />
     </Container>
   );
 }

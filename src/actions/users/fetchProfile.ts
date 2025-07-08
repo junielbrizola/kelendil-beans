@@ -3,6 +3,7 @@
 import { z } from "zod";
 import prisma from "@/lib/prisma";
 import type { ActionResult } from "../types";
+import { normalizeForm } from "../utils";
 
 const fetchProfileSchema = z.object({
   userId: z.string().uuid("Invalid user ID"),
@@ -17,25 +18,14 @@ export type ProfileData = {
 export async function fetchUserProfileAction(
   formData: FormData
 ): Promise<ActionResult<ProfileData>> {
-  // 1) Extrai e valida userId
-  const raw = Object.fromEntries(formData.entries());
-  const parse = fetchProfileSchema.safeParse({ userId: raw.userId || "" });
-  if (!parse.success) {
-    const fieldErrors: Record<string,string> = {};
-    parse.error.errors.forEach(err => {
-      fieldErrors[err.path[0] as string] = err.message;
-    });
-    return {
-      success: false,
-      error: { code: "VALIDATION_ERROR", message: "Invalid input", fieldErrors }
-    };
-  }
-  const { userId } = parse.data;
-
+   const { data, errors } = await normalizeForm(fetchProfileSchema, formData);
+        if (errors) {
+            return { success: false, error: { code: 'VALIDATION_ERROR', message: 'Invalid input', fieldErrors: errors } };
+        }
   try {
     // 2) Busca usuário
     const user = await prisma.user.findUnique({
-      where: { id: userId }
+      where: { id: data?.userId }
     });
     if (!user) {
       return {

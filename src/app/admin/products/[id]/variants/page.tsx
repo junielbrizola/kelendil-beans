@@ -16,7 +16,7 @@ interface VariantsPageProps {
 
 export default async function AdminVariantsPage({ params: { id }, searchParams }: VariantsPageProps) {
   const session = await getServerSession(authOptions);
-  if (!session || session.user.role !== 'ADMIN') redirect('/');
+  if (!session || session?.user?.role !== 'ADMIN') redirect('/');
 
   return (
     <Container maxWidth="lg" sx={{ py: 4 }}>
@@ -24,7 +24,6 @@ export default async function AdminVariantsPage({ params: { id }, searchParams }
         Variantes do Produto
       </Typography>
       <Suspense fallback={<VariantTableSkeleton />}>
-        {/* @ts-expect-error Server Component */}
         <VariantTable productId={id} searchParams={searchParams} />
       </Suspense>
     </Container>

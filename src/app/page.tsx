@@ -6,9 +6,9 @@ import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
 import { fetchProductsAction } from '@/actions/products/fetchProducts';
-import ProductCard from '@/components/product/ProductCard';
+import ProductCard from '@/components/products/ProductCard';
 import ProductListSkeleton from '@/components/ui/Skeleton/ProductListSkeleton';
-import ProductFilter from '@/components/product/ProductFilter';
+import ProductFilter from '@/components/products/ProductFilter';
 
 interface ProductPageProps {
   searchParams: {
@@ -40,7 +40,7 @@ async function ServerProductList({
   if (!result.success || !result.data) {
     return (
       <Typography color="error" sx={{ mt: 4, textAlign: 'center' }}>
-        {result.error?.message || 'Erro ao carregar produtos.'}
+        {result?.error?.message || 'Erro ao carregar produtos.'}
       </Typography>
     );
   }
@@ -53,7 +53,7 @@ async function ServerProductList({
     <>
       <Grid container spacing={3}>
         {products.map(p => (
-          <Grid item xs={12} sm={6} md={4} key={p.id}>
+          <Grid size={{ xs: 12, sm: 6, md: 4 }} key={p.id}>
             <ProductCard
               id={p.id}
               name={p.name}
@@ -76,7 +76,6 @@ export default function HomePage({ searchParams }: ProductPageProps) {
       </Typography>
       <ProductFilter />
       <Suspense fallback={<ProductListSkeleton />}>
-        {/* @ts-expect-error Server Component */}
         <ServerProductList
           search={searchParams.search}
           type={searchParams.type}

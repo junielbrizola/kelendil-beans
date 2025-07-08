@@ -1,121 +1,107 @@
 // src/components/products/ProductDetail.tsx
 'use client';
-import React, { useEffect, useState } from 'react';
+
+import React, { useState } from 'react';
+import Image from 'next/image';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
-import Button from '@mui/material/Button';
-import Image from 'next/image';
-import FormControl from '@mui/material/FormControl';
-import InputLabel from '@mui/material/InputLabel';
-import Select from '@mui/material/Select';
+import TextField from '@mui/material/TextField';
 import MenuItem from '@mui/material/MenuItem';
-import { useRouter } from 'next/navigation';
-import { fetchProductDetailsAction, ProductDetailData } from '@/actions/products/fetchProductDetails';
-import { addToCartAction } from '@/actions/cart/addToCart';
-import { useSession } from 'next-auth/react';
+import Button from '@mui/material/Button';
+import Alert from '@mui/material/Alert';
 import { useSnackbar } from 'notistack';
-import RelatedProducts from './RelatedProducts';
+import { addToCartAction } from '@/actions/cart/addToCart';
+import type { ActionResult } from '@/actions/types';
+import type { ProductDetailData } from '@/actions/products/fetchProductById';
 
-interface ProductDetailProps {
-  productId: string;
+interface Props {
+  productResult: ActionResult<ProductDetailData>;
 }
 
-export default function ProductDetail({ productId }: ProductDetailProps) {
-  const { data: session } = useSession();
+export default function ProductDetail({ productResult }: Props) {
   const { enqueueSnackbar } = useSnackbar();
-  const router = useRouter();
-
-  const [detail, setDetail] = useState<ProductDetailData | null>(null);
-  const [selectedVariant, setSelectedVariant] = useState<string>("");
+  const [variantId, setVariantId] = useState<string>('');
   const [quantity, setQuantity] = useState(1);
+  const [submitting, setSubmitting] = useState(false);
 
-  useEffect(() => {
-    (async () => {
-      const fd = new FormData();
-      fd.append('productId', productId);
-      const res = await fetchProductDetailsAction(fd);
-      if (res.success) {
-        setDetail(res.data);
-        if (res.data.variants.length > 0) {
-          setSelectedVariant(res.data.variants[0].id);
-        }
-      }
-    })();
-  }, [productId]);
+  if (!productResult.success) {
+    return <Alert severity="error">{productResult.error.message}</Alert>;
+  }
 
-  const onAddToCart = async () => {
-    if (!session) {
-      router.push(`/login?callbackUrl=/products/${productId}`);
-      return;
-    }
+  const p = productResult.data;
+  const firstVariant = p.variants[0]?.id;
+  if (!variantId && firstVariant) setVariantId(firstVariant);
+
+  const handleAddToCart = async () => {
+    setSubmitting(true);
     const fd = new FormData();
-    fd.append('userId', session.user.id);
-    fd.append('variantId', selectedVariant);
+    fd.append('userId', ''); // substituir pelo ID real do usuário logado
+    fd.append('variantId', variantId);
     fd.append('quantity', String(quantity));
     const res = await addToCartAction(fd);
+    setSubmitting(false);
     if (res.success) {
-      enqueueSnackbar('Adicionado ao carrinho', { variant: 'success' });
-      router.push('/cart');
+      enqueueSnackbar('Adicionado ao carrinho!', { variant: 'success' });
     } else {
       enqueueSnackbar(res.error.message, { variant: 'error' });
     }
   };
 
-  if (!detail) return null;
-
   return (
-    <Box sx={{ display: 'grid', gap: 3, maxWidth: 800, mx: 'auto', p: 2 }}>
-      {detail.imageUrl && (
-        <Box sx={{ position: 'relative', width: '100%', height: 400, borderRadius: 2, overflow: 'hidden' }}>
+    <Box>
+      {p.imageUrl && (
+        <Box sx={{ position: 'relative', width: '100%', height: 400, mb: 3 }}>
           <Image
-            src={detail.imageUrl}
-            alt={detail.name}
+            src={p.imageUrl}
+            alt={p.name}
             fill
-            style={{ objectFit: 'cover' }}
+            style={{ objectFit: 'cover', borderRadius: 8 }}
             priority
           />
         </Box>
       )}
-      <Typography variant="h4">{detail.name}</Typography>
-      {detail.description && (
-        <Typography variant="body1" color="text.secondary">
-          {detail.description}
+
+      <Typography variant="h5" gutterBottom>{p.name}</Typography>
+      {p.description && (
+        <Typography variant="body1" color="text.secondary" paragraph>
+          {p.description}
         </Typography>
       )}
-      <FormControl fullWidth>
-        <InputLabel id="variant-label">Variante</InputLabel>
-        <Select
-          labelId="variant-label"
-          value={selectedVariant}
+
+      <Box component="form" sx={{ display: 'flex', gap: 2, flexWrap: 'wrap', mb: 4 }}>
+        <TextField
+          select
           label="Variante"
-          onChange={e => setSelectedVariant(e.target.value)}
+          value={variantId}
+          onChange={e => setVariantId(e.target.value)}
+          size="small"
+          sx={{ minWidth: 160 }}
         >
-          {detail.variants.map(v => (
+          {p.variants.map(v => (
             <MenuItem key={v.id} value={v.id}>
-              {v.weightInGrams}g — R$ {v.price.toFixed(2)} {v.stock === 0 && "(Esgotado)"}
+              {v.weightInGrams} g — R$ {v.price.toFixed(2)} {v.stock === 0 && '(Esgotado)'}
             </MenuItem>
           ))}
-        </Select>
-      </FormControl>
-      <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
-        <Typography>Quantidade:</Typography>
-        <input
+        </TextField>
+
+        <TextField
+          label="Quantidade"
           type="number"
-          min={1}
           value={quantity}
-          onChange={e => setQuantity(Number(e.target.value))}
-          style={{ width: 60, padding: '4px' }}
+          onChange={e => setQuantity(Math.max(1, Number(e.target.value)))}
+          size="small"
+          inputProps={{ min: 1 }}
+          sx={{ width: 100 }}
         />
+
+        <Button
+          variant="contained"
+          onClick={handleAddToCart}
+          disabled={submitting || p.variants.find(v => v.id === variantId)?.stock === 0}
+        >
+          {submitting ? 'Adicionando...' : 'Adicionar ao Carrinho'}
+        </Button>
       </Box>
-      <Button
-        variant="contained"
-        size="large"
-        disabled={!selectedVariant}
-        onClick={onAddToCart}
-      >
-        Adicionar ao Carrinho
-      </Button>
-      <RelatedProducts productId={productId} type={detail.type} />
     </Box>
   );
 }

@@ -12,7 +12,7 @@ import DashboardMetricsSkeleton from '@/components/ui/Skeleton/DashboardMetricsS
 
 export default async function AdminPage() {
   const session = await getServerSession(authOptions);
-  if (!session || session.user.role !== 'ADMIN') {
+  if (!session || session?.user?.role !== 'ADMIN') {
     redirect('/');
   }
   return (
@@ -21,7 +21,6 @@ export default async function AdminPage() {
         Dashboard Administrativo
       </Typography>
       <Suspense fallback={<DashboardMetricsSkeleton />}>
-        {/* @ts-expect-error Server Component */}
         <AdminMetrics />
       </Suspense>
     </Container>

@@ -6,22 +6,21 @@ import type { ActionResult } from "../types";
 import { normalizeForm } from "../utils";
 
 const fetchCartSchema = z.object({
-  userId: z.string().uuid("Invalid user ID"),
+  userId: z.string().uuid("Invalid user ID")
 });
 
-type CartItemDetail = {
-  variantId: string;
-  productName: string;
+type CartItemData = {
+  id: string;
+  productId: string;
+  name: string;
   imageUrl?: string;
-  weightInGrams: number;
-  unitPrice: number;
   quantity: number;
-  total: number;
+  unitPrice: number;
 };
 
 type FetchCartData = {
-  items: CartItemDetail[];
-  subtotal: number;
+  items: CartItemData[];
+  total: number;
 };
 
 export async function fetchCartAction(
@@ -36,34 +35,25 @@ export async function fetchCartAction(
       where: { userId: data?.userId },
       include: {
         items: {
-          include: {
-            variant: {
-              include: { product: true }
-            }
-          }
+          include: { variant: { include: { product: true } } }
         }
       }
     });
     if (!cart || cart.items.length === 0) {
-      return { success: true, data: { items: [], subtotal: 0 } };
+      return { success: true, data: { items: [], total: 0 } };
     }
-    const items = cart.items.map(item => {
-      const price = item.variant.price.toNumber();
-      const qty = item.quantity;
-      return {
-        variantId: item.variantId,
-        productName: item.variant.product.name,
-        imageUrl: item.variant.product.imageUrl || undefined,
-        weightInGrams: item.variant.weightInGrams,
-        unitPrice: price,
-        quantity: qty,
-        total: price * qty,
-      };
-    });
-    const subtotal = items.reduce((sum, it) => sum + it.total, 0);
-    return { success: true, data: { items, subtotal } };
-  } catch (error) {
-    console.error("fetchCartAction error:", error);
+    const items: CartItemData[] = cart.items.map(item => ({
+      id: item.id,
+      productId: item.variant.product.id,
+      name: item.variant.product.name,
+      imageUrl: item.variant.product.imageUrl || undefined,
+      quantity: item.quantity,
+      unitPrice: Number(item.variant.price.toString())
+    }));
+    const total = items.reduce((sum, i) => sum + i.unitPrice * i.quantity, 0);
+    return { success: true, data: { items, total } };
+  } catch (e) {
+    console.error("fetchCartAction error:", e);
     return { success: false, error: { code: "DB_ERROR", message: "Error fetching cart" } };
   }
 }

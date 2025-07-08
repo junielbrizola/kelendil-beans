@@ -25,7 +25,7 @@ async function getInitial(id: string, vid: string) {
 
 export default async function VariantEditPage({ params: { id, vid } }: Props) {
   const session = await getServerSession(authOptions);
-  if (!session || session.user.role !== 'ADMIN') redirect('/');
+  if (!session || session?.user?.role !== 'ADMIN') redirect('/');
   const initial = await getInitial(id, vid);
   if (!initial) {
     return <Typography color="error" sx={{ py: 4 }}>Variante não encontrada</Typography>;

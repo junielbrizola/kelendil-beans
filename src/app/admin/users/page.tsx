@@ -1,31 +1,36 @@
-// src/app/admin/users/page.tsx
-export const dynamic = 'auto';
+export const dynamic    = 'auto';
+export const revalidate = 10;
 
-import React, { Suspense } from 'react';
-import Container from '@mui/material/Container';
-import Typography from '@mui/material/Typography';
-import Box from '@mui/material/Box';
-import Skeleton from '@mui/material/Skeleton';
-import AdminUserList from '@/components/admin/UserList';
+import React, { Suspense } from "react";
+import { getServerSession } from "next-auth/next";
+import { redirect } from "next/navigation";
+import Container from "@mui/material/Container";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import Button from "@mui/material/Button";
+import AdminUserList from "@/components/admin/users/AdminUserList";
+import AdminUserListSkeleton from "@/components/ui/Skeleton/AdminUserListSkeleton";
+import { fetchUsersAction } from "@/actions/users/fetchUsers";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 
-export default function AdminUsersPage() {
+export default async function AdminUsersPage() {
+  const session = await getServerSession(authOptions);
+  if (!session || session.user.role !== "ADMIN") redirect("/");
+
+  const fd = new FormData();
+  const usersResult = await fetchUsersAction(fd);
+
   return (
-    <Container maxWidth="lg" sx={{ py: 4 }}>
-      <Typography variant="h4" gutterBottom>
-        Usuários
-      </Typography>
-      <Suspense
-        fallback={
-          <Box>
-            <Skeleton variant="text" width="30%" height={32} sx={{ mb: 2 }} />
-            {[...Array(5)].map((_, i) => (
-              <Skeleton key={i} variant="rectangular" height={40} sx={{ mb: 1 }} />
-            ))}
-          </Box>
-        }
-      >
-        {/* @ts-expect-error Server Component */}
-        <AdminUserList />
+    <Container maxWidth="lg" sx={{ py:4 }}>
+      <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
+        <Typography variant="h4">Gestão de Usuários</Typography>
+        <Button variant="contained" href="/admin/users/create">
+          + Novo Usuário
+        </Button>
+      </Box>
+      <Suspense fallback={<AdminUserListSkeleton />}>
+        {/* @ts-expect-error Client */}
+        <AdminUserList usersResult={usersResult} />
       </Suspense>
     </Container>
   );

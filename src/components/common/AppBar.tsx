@@ -31,10 +31,10 @@ export default function AppBar() {
         {session ? (
           <Button
             component={Link}
-            href={session.user.role === 'ADMIN' ? '/admin' : '/profile'}
+            href={session?.user?.role === 'ADMIN' ? '/admin' : '/profile'}
             color="inherit"
           >
-            {session.user.name ?? session.user.email}
+            {session?.user?.name ?? session?.user?.email}
           </Button>
         ) : (
           <Button component={Link} href="/login" color="inherit">

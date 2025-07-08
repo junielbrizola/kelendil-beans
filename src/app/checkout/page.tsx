@@ -1,24 +1,22 @@
-export const dynamic = 'force-dynamic';
+export const dynamic    = 'auto';
+export const revalidate = 0;
 
-import React from 'react';
-import { getServerSession } from 'next-auth/next';
-import { redirect } from 'next/navigation';
+import React, { Suspense } from 'react';
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
-import Checkout from '@/components/checkout/Checkout';
-import { authOptions } from '../api/auth/[...nextauth]/route';
+import CheckoutForm from '@/components/checkout/CheckoutForm';
+import CheckoutSkeleton from '@/components/ui/Skeleton/CheckoutSkeleton';
 
-export default async function CheckoutPage() {
-  const session = await getServerSession(authOptions);
-  if (!session) redirect(`/login?callbackUrl=/checkout`);
-  const userId = session.user.id;
+export default function CheckoutPage() {
   return (
-    <Container maxWidth="md" sx={{ py: 4 }}>
+    <Container maxWidth="sm" sx={{ py:4 }}>
       <Typography variant="h4" gutterBottom>
-        Checkout
+        Finalizar Compra
       </Typography>
-      {/* @ts-expect-error Client Component */}
-      <Checkout userId={userId} />
+      <Suspense fallback={<CheckoutSkeleton />}>
+        {/* @ts-expect-error Client Component */}
+        <CheckoutForm />
+      </Suspense>
     </Container>
   );
 }

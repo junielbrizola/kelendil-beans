@@ -1,20 +1,16 @@
-// src/app/admin/products/[id]/loading.tsx
 'use client';
-
 import React from 'react';
 import Container from '@mui/material/Container';
-import Skeleton from '@mui/material/Skeleton';
+import ProductEditSkeleton from '@/components/ui/Skeleton/ProductEditSkeleton';
+import VariantsSkeleton from '@/components/ui/Skeleton/VariantsSkeleton';
 import Box from '@mui/material/Box';
 
-export default function EditProductLoading() {
+export default function AdminEditProductLoading() {
   return (
     <Container maxWidth="md" sx={{ py: 4 }}>
-      <Skeleton variant="text" width="40%" height={48} sx={{ mb: 2 }} />
-      <Box sx={{ display: 'grid', gap: 2 }}>
-        <Skeleton variant="rectangular" height={56} />
-        <Skeleton variant="rectangular" height={56} />
-        <Skeleton variant="rectangular" height={56} />
-        <Skeleton variant="rectangular" height={56} />
+      <ProductEditSkeleton />
+      <Box mt={6}>
+        <VariantsSkeleton />
       </Box>
     </Container>
   );

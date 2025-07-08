@@ -28,7 +28,7 @@ async function getProductInitial(id: string) {
 
 export default async function AdminProductEditPage({ params: { id } }: EditPageProps) {
   const session = await getServerSession(authOptions);
-  if (!session || session.user.role !== 'ADMIN') redirect('/');
+  if (!session || session?.user?.role !== 'ADMIN') redirect('/');
 
   const initial = await getProductInitial(id);
   if (!initial) {

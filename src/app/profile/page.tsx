@@ -1,12 +1,15 @@
-export const dynamic = 'auto';
+// src/app/profile/page.tsx
+export const dynamic   = 'auto';
+export const revalidate = 10;  // revalida a cada 10s
 
 import React, { Suspense } from 'react';
 import { getServerSession } from 'next-auth/next';
 import { redirect } from 'next/navigation';
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
-import ProfileForm from '@/components/profile/ProfileForm';
-import ProfileSkeleton from '@/components/ui/Skeleton/ProfileSkeleton';
+import OrderList from '@/components/profile/OrderList';
+import OrderListSkeleton from '@/components/ui/Skeleton/OrderListSkeleton';
+import { fetchOrdersAction } from '@/actions/orders/fetchOrders';
 import { authOptions } from '../api/auth/[...nextauth]/route';
 
 export default async function ProfilePage() {
@@ -14,16 +17,20 @@ export default async function ProfilePage() {
   if (!session) {
     redirect(`/login?callbackUrl=/profile`);
   }
-  const userId = session.user.id;
+
+  const fd = new FormData();
+  fd.append('userId', session.user.id);
+  // opcional: status, page, pageSize via searchParams
+  const ordersResult = await fetchOrdersAction(fd);
 
   return (
     <Container maxWidth="md" sx={{ py: 4 }}>
       <Typography variant="h4" gutterBottom>
-        My Profile
+        Meus Pedidos
       </Typography>
-      <Suspense fallback={<ProfileSkeleton />}>
-        {/* @ts-expect-error Server Component */}
-        <ProfileForm userId={userId} />
+      <Suspense fallback={<OrderListSkeleton />}>
+        {/* @ts-expect-error Client Component */}
+        <OrderList ordersResult={ordersResult} />
       </Suspense>
     </Container>
   );

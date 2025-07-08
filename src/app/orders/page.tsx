@@ -12,14 +12,13 @@ import { authOptions } from '../api/auth/[...nextauth]/route';
 export default async function OrdersPage({ searchParams }: { searchParams: any }) {
   const session = await getServerSession(authOptions);
   if (!session) redirect(`/login?callbackUrl=/orders`);
-  const userId = session.user.id;
+  const userId = session?.user?.id;
   return (
     <Container maxWidth="lg" sx={{ py: 4 }}>
       <Typography variant="h4" gutterBottom>
         Meus Pedidos
       </Typography>
       <Suspense fallback={<OrderListSkeleton />}>
-        {/* @ts-expect-error Server Component */}
         <OrderList userId={userId} searchParams={searchParams} />
       </Suspense>
     </Container>

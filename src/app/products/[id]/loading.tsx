@@ -4,9 +4,9 @@ import React from 'react';
 import Container from '@mui/material/Container';
 import ProductDetailSkeleton from '@/components/ui/Skeleton/ProductDetailSkeleton';
 
-export default function ProductLoading() {
+export default function ProductDetailLoading() {
   return (
-    <Container maxWidth="lg" sx={{ py: 4 }}>
+    <Container maxWidth="md" sx={{ py: 4 }}>
       <ProductDetailSkeleton />
     </Container>
   );

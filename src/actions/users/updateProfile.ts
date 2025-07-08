@@ -4,6 +4,7 @@ import { z } from "zod";
 import prisma from "@/lib/prisma";
 import bcrypt from "bcryptjs";
 import type { ActionResult } from "../types";
+import { normalizeForm } from "../utils";
 
 const updateProfileSchema = z.object({
   userId: z.string().uuid("Invalid user ID"),
@@ -15,38 +16,22 @@ const updateProfileSchema = z.object({
 export async function updateUserProfileAction(
   formData: FormData
 ): Promise<ActionResult<{}>> {
-  // 1) Extrai e valida
-  const raw = Object.fromEntries(formData.entries());
-  const parse = updateProfileSchema.safeParse({
-    userId: raw.userId || "",
-    name: raw.name || undefined,
-    email: raw.email || undefined,
-    password: raw.password || undefined
-  });
-  if (!parse.success) {
-    const fieldErrors: Record<string,string> = {};
-    parse.error.errors.forEach(err => {
-      fieldErrors[err.path[0] as string] = err.message;
-    });
-    return {
-      success: false,
-      error: { code: "VALIDATION_ERROR", message: "Invalid input", fieldErrors }
-    };
-  }
-  const { userId, name, email, password } = parse.data;
-
+    const { data, errors } = await normalizeForm(updateProfileSchema, formData);
+          if (errors) {
+              return { success: false, error: { code: 'VALIDATION_ERROR', message: 'Invalid input', fieldErrors: errors } };
+          }
   try {
     // 2) Monta payload de atualização
     const dataToUpdate: any = {};
-    if (name !== undefined) dataToUpdate.name = name;
-    if (email !== undefined) dataToUpdate.email = email;
-    if (password !== undefined) {
-      dataToUpdate.password = await bcrypt.hash(password, 12);
+    if (data?.name !== undefined) dataToUpdate.name = data?.name;
+    if (data?.email !== undefined) dataToUpdate.email = data?.email;
+    if (data?.password !== undefined) {
+      dataToUpdate.password = await bcrypt.hash(data?.password, 12);
     }
 
     // 3) Atualiza usuário
     await prisma.user.update({
-      where: { id: userId },
+      where: { id: data?.userId },
       data: dataToUpdate
     });
 
