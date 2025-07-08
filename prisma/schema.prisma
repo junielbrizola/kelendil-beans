@@ -1,0 +1,232 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["mongoDb"]
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+// Enums
+enum ProductType {
+  COFFEE
+  COCOA
+}
+
+enum OrderStatus {
+  PENDING
+  CONFIRMED
+  SHIPPED
+  DELIVERED
+  CANCELLED
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  FAILED
+  REFUNDED
+}
+
+enum ShipmentStatus {
+  PENDING
+  BOOKED
+  PICKED_UP
+  IN_TRANSIT
+  DELIVERED
+  RETURNED
+}
+
+enum OrderEventType {
+  STATUS_CHANGE
+  PAYMENT_UPDATE
+  SHIPMENT_UPDATE
+}
+
+enum PaymentEventType {
+  STATUS_CHANGE
+  REFUND
+  CHARGEBACK
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+// Models with ObjectId, soft-delete and indexes
+model User {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  name       String?
+  email      String   @unique
+  password   String
+  role       Role     @default(USER)
+  carts      Cart[]   
+  orders     Order[]  
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  deletedAt  DateTime? // Soft-delete field; TTL index via script (90 days)
+
+  @@index([email])
+}
+
+model PasswordResetToken {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  token      String   @unique
+  user       User     @relation(fields: [userId], references: [id])
+  userId     String   @db.ObjectId
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+
+  @@index([userId])
+  @@index([expiresAt])
+}
+
+model Product {
+  id          String           @id @default(auto()) @map("_id") @db.ObjectId
+  name        String
+  description String?
+  type        ProductType
+  imageUrl    String?
+  variants    ProductVariant[] 
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+  deletedAt   DateTime? // Soft-delete field; TTL index via script (90 days)
+
+  // Full-text index on name and description for fast search
+  @@fulltext([name, description], map: "ProductTextIndex")
+  @@index([type])
+  @@index([deletedAt])
+}
+
+model ProductVariant {
+  id            String    @id @default(auto()) @map("_id") @db.ObjectId
+  product       Product   @relation(fields: [productId], references: [id])
+  productId     String    @db.ObjectId
+  weightInGrams Int
+  price         Decimal   @db.Decimal(10,2)
+  stock         Int
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  deletedAt     DateTime? // Soft-delete field; TTL index via script (90 days)
+
+  @@unique([productId, weightInGrams])
+  @@index([productId])
+}
+
+model Cart {
+  id         String     @id @default(auto()) @map("_id") @db.ObjectId
+  user       User       @relation(fields: [userId], references: [id])
+  userId     String     @unique @db.ObjectId
+  items      CartItem[] 
+  updatedAt  DateTime   @updatedAt
+  deletedAt  DateTime? // Soft-delete field; TTL index via script (90 days)
+
+  @@index([userId])
+}
+
+model CartItem {
+  id         String         @id @default(auto()) @map("_id") @db.ObjectId
+  cart       Cart           @relation(fields: [cartId], references: [id])
+  cartId     String         @db.ObjectId
+  variant    ProductVariant @relation(fields: [variantId], references: [id])
+  variantId  String         @db.ObjectId
+  quantity   Int
+  addedAt    DateTime       @default(now())
+  deletedAt  DateTime? // Soft-delete field; TTL index via script (90 days)
+
+  @@unique([cartId, variantId])
+  @@index([cartId])
+}
+
+model Order {
+  id           String       @id @default(auto()) @map("_id") @db.ObjectId
+  user         User         @relation(fields: [userId], references: [id])
+  userId       String       @db.ObjectId
+  items        OrderItem[]  
+  totalAmount  Decimal      @db.Decimal(10,2)
+  status       OrderStatus  @default(PENDING)
+  payment      Payment?
+  shipment     Shipment?
+  events       OrderEvent[] 
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+  deletedAt    DateTime? // Soft-delete field; TTL index via script (90 days)
+
+  @@index([userId])
+  @@index([status])
+  @@index([createdAt])
+  @@index([userId, status, createdAt]) // Composite index for frequent queries
+}
+
+model OrderItem {
+  id         String         @id @default(auto()) @map("_id") @db.ObjectId
+  order      Order          @relation(fields: [orderId], references: [id])
+  orderId    String         @db.ObjectId
+  variant    ProductVariant @relation(fields: [variantId], references: [id])
+  variantId  String         @db.ObjectId
+  quantity   Int
+  unitPrice  Decimal        @db.Decimal(10,2)
+
+  @@map("order_items")
+  @@index([orderId])
+}
+
+model Payment {
+  id                  String         @id @default(auto()) @map("_id") @db.ObjectId
+  order               Order          @relation(fields: [orderId], references: [id])
+  orderId             String         @unique @db.ObjectId
+  provider            String         
+  providerPaymentId   String?
+  status              PaymentStatus  @default(PENDING)
+  amount              Decimal        @db.Decimal(10,2)
+  installments        Int?
+  events              PaymentEvent[] 
+  createdAt           DateTime       @default(now())
+  updatedAt           DateTime       @updatedAt
+  deletedAt           DateTime? // Soft-delete field; TTL index via script (90 days)
+
+  @@index([orderId])
+  @@index([status])
+}
+
+model Shipment {
+  id                 String         @id @default(auto()) @map("_id") @db.ObjectId
+  order              Order          @relation(fields: [orderId], references: [id])
+  orderId            String         @unique @db.ObjectId
+  provider           String         
+  service            String         
+  cost               Decimal        @db.Decimal(10,2)
+  trackingCode       String?
+  status             ShipmentStatus @default(PENDING)
+  estimatedDelivery  DateTime?
+  createdAt          DateTime       @default(now())
+  updatedAt          DateTime       @updatedAt
+  deletedAt          DateTime? // Soft-delete field; TTL index via script (90 days)
+
+  @@index([orderId])
+  @@index([status])
+}
+
+model OrderEvent {
+  id         String          @id @default(auto()) @map("_id") @db.ObjectId
+  order      Order           @relation(fields: [orderId], references: [id])
+  orderId    String          @db.ObjectId
+  type       OrderEventType
+  description String?
+  createdAt  DateTime        @default(now())
+
+  @@index([orderId])
+}
+
+model PaymentEvent {
+  id          String           @id @default(auto()) @map("_id") @db.ObjectId
+  payment     Payment          @relation(fields: [paymentId], references: [id])
+  paymentId   String           @db.ObjectId
+  type        PaymentEventType
+  description String?
+  createdAt   DateTime         @default(now())
+
+  @@index([paymentId])
+}
