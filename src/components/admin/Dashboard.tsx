@@ -23,7 +23,7 @@ export default async function Dashboard() {
   return (
     <Grid container spacing={3}>
       {stats.map(({ label, value }) => (
-        <Grid item xs={12} sm={6} md={3} key={label}>
+        <Grid size={{ xs: 12, sm: 6, md: 3 }} key={label}>
           <Card sx={{ borderRadius: 2, boxShadow: 1 }}>
             <CardContent>
               <Typography variant="subtitle2" color="text.secondary">

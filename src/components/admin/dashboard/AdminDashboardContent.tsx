@@ -3,7 +3,7 @@
 
 import React from "react";
 import Box from "@mui/material/Box";
-import Grid from "@mui/material/Unstable_Grid2";
+import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
@@ -46,7 +46,7 @@ export default function AdminDashboardContent({ stats }: Props) {
     <Box>
       {/* resumo */}
       <Grid container spacing={2} mb={4}>
-        <Grid xs={4}>
+        <Grid size={{ xs: 4 }}>
           <Card>
             <CardContent>
               <Typography variant="subtitle2">Total Pedidos</Typography>
@@ -54,7 +54,7 @@ export default function AdminDashboardContent({ stats }: Props) {
             </CardContent>
           </Card>
         </Grid>
-        <Grid xs={4}>
+        <Grid size={{ xs: 4 }}>
           <Card>
             <CardContent>
               <Typography variant="subtitle2">Total Receita (R$)</Typography>
@@ -64,7 +64,7 @@ export default function AdminDashboardContent({ stats }: Props) {
             </CardContent>
           </Card>
         </Grid>
-        <Grid xs={4}>
+        <Grid size={{ xs: 4 }}>
           <Card>
             <CardContent>
               <Typography variant="subtitle2">

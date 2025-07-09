@@ -45,11 +45,11 @@ export default function ProfileForm({ userId }: ProfileFormProps) {
       fd.append('userId', userId);
       const res = await fetchUserProfileAction(fd);
       setLoading(false);
-      if (res.success && res.data) {
-        const d: ProfileData = res.data;
+      if (res.success && res?.data) {
+        const d: ProfileData = res?.data;
         reset({ name: d.name || '', email: d.email, password: '' });
       } else {
-        enqueueSnackbar(res.error?.message || 'Error loading profile', {
+        enqueueSnackbar(res?.error?.message || 'Error loading profile', {
           variant: 'error'
         });
       }
@@ -66,7 +66,7 @@ export default function ProfileForm({ userId }: ProfileFormProps) {
     if (res.success) {
       enqueueSnackbar('Profile updated', { variant: 'success' });
     } else {
-      enqueueSnackbar(res.error.message, { variant: 'error' });
+      enqueueSnackbar(res?.error?.message, { variant: 'error' });
     }
   };
 

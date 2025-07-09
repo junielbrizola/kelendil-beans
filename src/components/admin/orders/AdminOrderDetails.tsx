@@ -34,13 +34,13 @@ export default function AdminOrderDetails({ orderId }: Props) {
     fd.append('orderId', orderId);
     const res = await fetchOrderDetailsAction(fd);
     setOrderResult(res);
-    if (res.success) setStatus(res.data.status);
+    if (res.success) setStatus(res?.data?.status as string);
   };
 
   useEffect(() => { load(); }, []);
 
   if (!orderResult.success) {
-    return <Alert severity="error">{orderResult.error.message}</Alert>;
+    return <Alert severity="error">{orderResult?.error?.message}</Alert>;
   }
   const o = orderResult.data;
 
@@ -54,7 +54,7 @@ export default function AdminOrderDetails({ orderId }: Props) {
       setFeedback('Status atualizado com sucesso');
       load();
     } else {
-      setFeedback(`Erro: ${res.error.message}`);
+      setFeedback(`Erro: ${res?.error?.message}`);
     }
   };
 

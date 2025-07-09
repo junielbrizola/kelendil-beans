@@ -17,17 +17,21 @@ async function getProductInitial(id: string) {
   const fd = new FormData();
   fd.append('productId', id);
   const res = await fetchProductDetailsAction(fd);
-  if (!res.success || !res.data) return null;
+  if (!res.success || !res?.data) return null;
   return {
-    name: res.data.name,
-    description: res.data.description,
-    type: res.data.type,
-    imageUrl: res.data.imageUrl,
+    name: res?.data?.name,
+    description: res?.data?.description,
+    type: res?.data.
+    
+    
+    
+    type,
+    imageUrl: res?.data.imageUrl,
   };
 }
 
 export default async function AdminProductEditPage({ params: { id } }: EditPageProps) {
-  const session = await getServerSession(authOptions);
+  const session: any = await getServerSession(authOptions);
   if (!session || session?.user?.role !== 'ADMIN') redirect('/');
 
   const initial = await getProductInitial(id);

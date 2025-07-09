@@ -49,8 +49,8 @@ export default function CouponForm() {
     Object.entries(data).forEach(([k,v]) => fd.append(k,String(v)));
     const res = await createCouponAction(fd);
     setLoading(false);
-    if (res.success) router.push(`/admin/promotions/${res.data.couponId}`);
-    else setErrorMsg(res.error.message);
+    if (res.success) router.push(`/admin/promotions/${res?.data?.couponId}`);
+    else setErrorMsg(res?.error?.message as string);
   };
 
   return (

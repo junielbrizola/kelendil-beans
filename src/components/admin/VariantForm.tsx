@@ -54,9 +54,9 @@ export default function VariantForm({ productId, variantId, initial }: VariantFo
       enqueueSnackbar(`Variante ${variantId ? 'atualizada' : 'criada'} com sucesso`, { variant: 'success' });
       router.push(`/admin/products/${productId}/variants`);
     } else {
-      const msg = res.error.fieldErrors
-        ? Object.values(res.error.fieldErrors).join(' ')
-        : res.error.message;
+      const msg = res?.error?.fieldErrors
+        ? Object.values(res?.error?.fieldErrors).join(' ')
+        : res?.error?.message;
       enqueueSnackbar(msg, { variant: 'error' });
     }
   };

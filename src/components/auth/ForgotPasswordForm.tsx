@@ -29,7 +29,7 @@ export default function ForgotPasswordForm() {
     if (res.success) {
       enqueueSnackbar('Email enviado com instruções', { variant: 'success' });
     } else {
-      enqueueSnackbar(res.error.message, { variant: 'error' });
+      enqueueSnackbar(res?.error?.message, { variant: 'error' });
     }
   };
 

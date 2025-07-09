@@ -43,7 +43,7 @@ export default function ProductDetail({ productResult }: Props) {
     if (res.success) {
       enqueueSnackbar('Adicionado ao carrinho!', { variant: 'success' });
     } else {
-      enqueueSnackbar(res.error.message, { variant: 'error' });
+      enqueueSnackbar(res?.error?.message, { variant: 'error' });
     }
   };
 

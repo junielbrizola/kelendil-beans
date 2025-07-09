@@ -10,7 +10,7 @@ export default function AdminDashboardSkeleton() {
       {/* resumo */}
       <Grid container spacing={2} mb={4}>
         {Array.from({ length: 3 }).map((_, i) => (
-          <Grid xs={4} key={i}>
+          <Grid size={{ xs: 4 }} key={i}>
             <Skeleton variant="rectangular" height={100} />
           </Grid>
         ))}

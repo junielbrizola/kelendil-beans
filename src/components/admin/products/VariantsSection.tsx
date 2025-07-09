@@ -21,6 +21,7 @@ import { createVariantAction } from '@/actions/products/variants/createVariant';
 import { updateVariantAction } from '@/actions/products/variants/updateVariant';
 import { deleteVariantAction } from '@/actions/products/variants/deleteVariant';
 import type { ActionResult } from '@/actions/types';
+import { Alert } from '@mui/material';
 
 const variantSchema = z.object({
   productId: z.string().uuid(),
@@ -49,7 +50,7 @@ export default function VariantsSection({ productId }: Props) {
     fd.append('productId', productId);
     const res = await fetchVariantsAction(fd);
     if (res.success) {
-      setVariants(res.data.variants as any);
+      setVariants(res?.data?.variants as any);
     }
   };
 
@@ -64,7 +65,7 @@ export default function VariantsSection({ productId }: Props) {
       reset({ productId, weightInGrams: 0, price: 0, stock: 0 });
       load();
     } else {
-      setErrorMsg(res.error.message);
+      setErrorMsg(res?.error?.message as string);
     }
   };
 
@@ -74,7 +75,7 @@ export default function VariantsSection({ productId }: Props) {
     Object.entries(data).forEach(([k,v]) => fd.append(k, String(v)));
     const res = await updateVariantAction(fd);
     if (res.success) load();
-    else setErrorMsg(res.error.message);
+    else setErrorMsg(res?.error?.message as string);
   };
 
   const onDelete = async (id: string) => {
@@ -82,7 +83,7 @@ export default function VariantsSection({ productId }: Props) {
     fd.append('variantId', id);
     const res = await deleteVariantAction(fd);
     if (res.success) load();
-    else setErrorMsg(res.error.message);
+    else setErrorMsg(res?.error?.message as string);
   };
 
   return (

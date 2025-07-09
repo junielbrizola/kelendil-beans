@@ -61,8 +61,8 @@ export default function CheckoutForm() {
     fd.append('heightCm', '10');
     const res = await calculateFreightAction(fd);
     setLoadingFreight(false);
-    if (res.success) setShippingOptions(res.data.options);
-    else enqueueSnackbar(res.error.message, { variant:'error' });
+    if (res.success) setShippingOptions(res?.data?.options || []);
+    else enqueueSnackbar(res?.error?.message, { variant:'error' });
   };
 
   const onSubmit = async (data:FormData) => {

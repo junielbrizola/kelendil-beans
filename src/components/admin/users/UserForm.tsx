@@ -38,8 +38,8 @@ export default function UserForm() {
     Object.entries(data).forEach(([k,v])=>fd.append(k,v));
     const res = await createUserAction(fd);
     setLoading(false);
-    if (res.success) router.push(`/admin/users/${res.data.userId}`);
-    else setErrorMsg(res.error.message);
+    if (res.success) router.push(`/admin/users/${res?.data?.userId}`);
+    else setErrorMsg(res?.error?.message as string);
   };
 
   return (

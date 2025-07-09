@@ -35,7 +35,7 @@ export default function ResetPasswordForm({ token }: { token: string }) {
       enqueueSnackbar('Senha atualizada!', { variant: 'success' });
       window.location.href = '/login';
     } else {
-      enqueueSnackbar(res.error.message, { variant: 'error' });
+      enqueueSnackbar(res?.error?.message as string, { variant: 'error' });
     }
   };
 

@@ -39,7 +39,7 @@ export default function ProductGrid({
     <>
       <Grid container spacing={3}>
         {products.map((p) => (
-          <Grid item key={p.id} xs={12} sm={6} md={4} lg={3}>
+          <Grid key={p.id} size={{ xs: 12, sm: 6, md: 4, lg: 3 }}>
             <Card>
               <CardActionArea component={Link} href={`/products/${p.id}`}>
                 {p.imageUrl ? (

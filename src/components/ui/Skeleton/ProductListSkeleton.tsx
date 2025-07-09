@@ -1,7 +1,7 @@
 // src/components/ui/Skeleton/ProductListSkeleton.tsx
 import React from 'react';
 import Box from '@mui/material/Box';
-import Grid from '@mui/material/Unstable_Grid2';
+import Grid from '@mui/material/Grid';
 import Skeleton from '@mui/material/Skeleton';
 
 export default function ProductListSkeleton() {
@@ -9,7 +9,7 @@ export default function ProductListSkeleton() {
     <Box>
       <Grid container spacing={4}>
         {Array.from({ length: 8 }).map((_, i) => (
-          <Grid xs={12} sm={6} md={4} lg={3} key={i}>
+          <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }} key={i}>
             <Box>
               <Skeleton variant="rectangular" height={200} sx={{ borderRadius: 2 }} />
               <Skeleton variant="text" width="60%" sx={{ mt: 1 }} />

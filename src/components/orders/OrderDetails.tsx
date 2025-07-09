@@ -16,11 +16,11 @@ export default async function OrderDetails({ orderId }: OrderDetailsProps) {
   fd.append('orderId', orderId);
   const res = await fetchOrderDetailsAction(fd);
 
-  if (!res.success || !res.data) {
+  if (!res.success || !res?.data) {
     return <Typography color="error">Erro ao carregar detalhes do pedido.</Typography>;
   }
 
-  const { items, totalAmount, status, payment, shipment, events, createdAt } = res.data;
+  const { items, totalAmount, status, payment, shipment, events, createdAt } = res?.data;
 
   return (
     <Box sx={{ display: 'grid', gap: 3 }}>

@@ -40,7 +40,7 @@ export default function UserEditForm({ userId }:Props) {
       fd.append("search", "");
       const res = await fetchUsersAction(fd);
       if(res.success){
-        const u = res.data.users.find(u=>u.id===userId);
+        const u: any = res?.data?.users.find(u=>u.id===userId);
         if(u) reset({ id:userId, name:u.name||"", email:u.email, role:u.role, password:"" });
       }
     })();
@@ -54,7 +54,7 @@ export default function UserEditForm({ userId }:Props) {
     const res = await updateUserAction(fd);
     setLoading(false);
     if(res.success) router.refresh();
-    else setErrorMsg(res.error.message);
+    else setErrorMsg(res?.error?.message as string);
   };
 
   return (

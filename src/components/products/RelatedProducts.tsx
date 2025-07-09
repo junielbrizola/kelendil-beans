@@ -26,7 +26,7 @@ export default function RelatedProducts({ productId, type }: RelatedProductsProp
       fd.append('productId', productId);
       fd.append('type', type);
       const res = await fetchRelatedProductsAction(fd);
-      if (res.success) setRelated(res.data);
+      if (res.success) setRelated(res?.data);
     })();
   }, [productId, type]);
 

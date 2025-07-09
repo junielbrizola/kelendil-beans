@@ -51,9 +51,9 @@ export default function ProductForm() {
     setLoading(false);
 
     if (res.success) {
-      router.push(`/admin/products/${res.data.productId}`);
+      router.push(`/admin/products/${res?.data?.productId}`);
     } else {
-      setErrorMsg(res.error.message);
+      setErrorMsg(res?.error?.message as string);
     }
   };
 

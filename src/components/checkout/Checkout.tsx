@@ -63,9 +63,9 @@ export default function Checkout({ userId }: CheckoutProps) {
       fd.append('heightCm', '10');
       const res = await calculateFreightAction(fd);
       if (!res.success) {
-        enqueueSnackbar(res.error.message, { variant: 'error' });
+        enqueueSnackbar(res?.error?.message, { variant: 'error' });
       } else {
-        setFreightOptions(res.data.options);
+        setFreightOptions(res?.data?.options || []);
       }
     } catch {
       enqueueSnackbar('Erro ao calcular frete', { variant: 'error' });

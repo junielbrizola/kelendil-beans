@@ -28,7 +28,7 @@ export default function VariantDelete({
       enqueueSnackbar('Variante excluída com sucesso', { variant: 'success' });
       router.push(`/admin/products/${productId}/variants`);
     } else {
-      enqueueSnackbar(res.error.message, { variant: 'error' });
+      enqueueSnackbar(res?.error?.message, { variant: 'error' });
     }
   };
 

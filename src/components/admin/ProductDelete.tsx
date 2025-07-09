@@ -22,7 +22,7 @@ export default function ProductDelete({ productId }: { productId: string }) {
       enqueueSnackbar('Produto excluído com sucesso', { variant: 'success' });
       router.push('/admin/products');
     } else {
-      enqueueSnackbar(res.error.message, { variant: 'error' });
+      enqueueSnackbar(res?.error?.message, { variant: 'error' });
     }
   };
 

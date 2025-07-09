@@ -47,7 +47,7 @@ export default function ProductEditForm({ productId }: Props) {
       const res = await fetchProductsAction(fd);
       // filtrar produto pelo ID
       if (res.success) {
-        const prod = res.data.products.find(p => p.id === productId);
+        const prod = res?.data?.products.find(p => p.id === productId);
         if (prod) {
           reset({ productId, name: prod.name, description: prod.description, type: prod.type, imageUrl: prod.imageUrl||'' });
         }
@@ -72,7 +72,7 @@ export default function ProductEditForm({ productId }: Props) {
     if (res.success) {
       router.refresh();
     } else {
-      setErrorMsg(res.error.message);
+      setErrorMsg(res?.error?.message as string);
     }
   };
 

@@ -3,7 +3,7 @@
 
 import React, { useState } from 'react';
 import Box from '@mui/material/Box';
-import Grid from '@mui/material/Unstable_Grid2';
+import Grid from '@mui/material/Grid';
 import Card from '@mui/material/Card';
 import CardActionArea from '@mui/material/CardActionArea';
 import CardContent from '@mui/material/CardContent';
@@ -60,7 +60,7 @@ export default function ProductList({ productsResult }: Props) {
     <Box>
       <Grid container spacing={4}>
         {products.map((p, idx) => (
-          <Grid xs={12} sm={6} md={4} lg={3} key={p.id}>
+          <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }} key={p.id}>
             <Card elevation={2} sx={{ borderRadius: 2 }}>
               <CardActionArea onClick={() => router.push(`/products/${p.id}`)}>
                 {p.imageUrl ? (

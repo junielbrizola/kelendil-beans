@@ -39,7 +39,7 @@ export default function CartItemRow({ item, userId }: CartItemRowProps) {
       setQty(newQty);
       enqueueSnackbar('Quantidade atualizada', { variant: 'success' });
     } else {
-      enqueueSnackbar(res.error.message, { variant: 'error' });
+      enqueueSnackbar(res?.error?.message, { variant: 'error' });
     }
   };
 
@@ -53,7 +53,7 @@ export default function CartItemRow({ item, userId }: CartItemRowProps) {
     if (res.success) {
       enqueueSnackbar('Item removido', { variant: 'success' });
     } else {
-      enqueueSnackbar(res.error.message, { variant: 'error' });
+      enqueueSnackbar(res?.error?.message, { variant: 'error' });
     }
   };
 
