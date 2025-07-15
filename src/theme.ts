@@ -1,21 +1,22 @@
-// src/theme/theme.ts
 import { createTheme, responsiveFontSizes } from '@mui/material/styles';
-import type { PaletteMode, ThemeOptions } from '@mui/material';
-import { amber, deepOrange, grey, green, red, blue } from '@mui/material/colors';
+import { amber, grey, green, red, blue } from '@mui/material/colors';
 
-export const getDesignTokens = (mode: PaletteMode): ThemeOptions => ({
+export const theme = responsiveFontSizes(createTheme({
+  colorSchemes: { light: true, dark: true },
+  cssVariables: {
+    colorSchemeSelector: 'class',
+  },
   palette: {
-    mode,
     primary: {
-      light: mode === 'light' ? '#8D6E63' : '#5D4037',
+      light: '#8D6E63',
       main:  '#6D4C41',
-      dark:  mode === 'light' ? '#5D4037' : '#3E2723',
+      dark:  '#5D4037',
       contrastText: '#fff'
     },
     secondary: {
-      light: mode === 'light' ? '#FF8A65' : '#D84315',
+      light: '#FF8A65',
       main:  '#D2691E',
-      dark:  mode === 'light' ? '#BF360C' : '#BF360C',
+      dark:  '#BF360C',
       contrastText: '#fff'
     },
     error:   { main: red[700] },
@@ -23,14 +24,14 @@ export const getDesignTokens = (mode: PaletteMode): ThemeOptions => ({
     info:    { main: blue[600] },
     success: { main: green[600] },
     background: {
-      default: mode === 'light' ? '#FAF5F0' : '#121212',
-      paper:   mode === 'light' ? '#FFFFFF' : '#1E1E1E'
+      default: '#FAF5F0',
+      paper:   '#FFFFFF'
     },
     text: {
-      primary:   mode === 'light' ? grey[900] : '#fff',
-      secondary: mode === 'light' ? grey[700] : grey[400]
+      primary:   grey[900],
+      secondary: grey[700]
     },
-    divider: mode === 'light' ? grey[200] : grey[700]
+    divider: grey[200]
   },
   typography: {
     fontFamily:        'var(--font-body), sans-serif',
@@ -49,9 +50,9 @@ export const getDesignTokens = (mode: PaletteMode): ThemeOptions => ({
     caption:           { fontSize: '0.75rem' },
     overline:          { fontSize: '0.625rem', textTransform: 'uppercase', fontWeight: 500 }
   },
-  spacing: 4,       // spacing(1) === 4px, spacing(2) === 8px, etc.
+  spacing: 4,       
   shape: {
-    borderRadius: 8 // padrão arredondado
+    borderRadius: 8 
   },
   components: {
     MuiCssBaseline: {
@@ -86,8 +87,8 @@ export const getDesignTokens = (mode: PaletteMode): ThemeOptions => ({
     MuiAppBar: {
       styleOverrides: {
         root: {
-          backgroundColor: mode === 'light' ? '#fff' : '#1E1E1E',
-          color: mode === 'light' ? grey[900] : '#fff'
+          backgroundColor: '#fff',
+          color: grey[900]
         }
       }
     },
@@ -96,12 +97,12 @@ export const getDesignTokens = (mode: PaletteMode): ThemeOptions => ({
     },
     MuiFormLabel: {
       styleOverrides: {
-        root: { color: mode === 'light' ? grey[800] : grey[300] }
+        root: { color: grey[800] }
       }
     },
     MuiInputAdornment: {
       styleOverrides: {
-        root: { color: mode === 'light' ? grey[600] : grey[400] }
+        root: { color: grey[600] }
       }
     },
     MuiSkeleton: {
@@ -115,7 +116,7 @@ export const getDesignTokens = (mode: PaletteMode): ThemeOptions => ({
       defaultProps: { underline: 'hover' },
       styleOverrides: {
         root: {
-          color: mode === 'light' ? '#6D4C41' : '#D2691E'
+          color: '#6D4C41'
         }
       }
     },
@@ -126,10 +127,6 @@ export const getDesignTokens = (mode: PaletteMode): ThemeOptions => ({
         }
       }
     }
-    // …adicione overrides para outros componentes conforme necessidade
   }
-});
+}));
 
-export function getTheme(mode: PaletteMode) {
-  return responsiveFontSizes(createTheme(getDesignTokens(mode)));
-}

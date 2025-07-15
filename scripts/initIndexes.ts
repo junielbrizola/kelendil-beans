@@ -1,10 +1,9 @@
-// scripts/initIndexes.ts
 import { PrismaClient } from '@prisma/client';
 import fs from 'fs';
 import path from 'path';
 
 const MAX_RETRIES = 5;
-const INITIAL_BACKOFF = 1000; // 1 second
+const INITIAL_BACKOFF = 1000;
 
 async function delay(ms: number) {
   return new Promise(resolve => setTimeout(resolve, ms));
@@ -13,15 +12,13 @@ async function delay(ms: number) {
 async function initIndexes() {
   const prisma = new PrismaClient();
   try {
-    // Read schema.prisma to extract model names
     const schemaPath = path.resolve(__dirname, '../prisma/schema.prisma');
     const schemaContent = fs.readFileSync(schemaPath, 'utf-8');
     const modelNames = Array.from(
       schemaContent.matchAll(/model\s+(\w+)\s+\{/g)
     ).map(m => m[1]);
 
-    // TTL expiration: 90 days in seconds
-    const expireAfterSeconds = 90 * 24 * 60 * 60; // 7776000 seconds
+    const expireAfterSeconds = 90 * 24 * 60 * 60;
 
     for (const modelName of modelNames) {
       const collectionName = modelName;
@@ -61,9 +58,3 @@ async function initIndexes() {
     }
   }
 })();
-
-
-// await prisma.$runCommandRaw({
-//   createIndexes: 'PasswordResetToken',
-//   indexes: [{ key: { expiresAt: 1 }, name: 'PasswordResetTokenTTL', expireAfterSeconds: 0 }]
-// });
