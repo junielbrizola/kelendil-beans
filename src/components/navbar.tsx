@@ -1,21 +1,23 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client'
 
-import { AppBar, Button, Container, Divider, IconButton, Menu, MenuItem, Stack, Toolbar, Typography, useColorScheme } from '@mui/material';
+import { AppBar, Container, Divider, IconButton, Menu, MenuItem, Stack, Toolbar, Typography, useColorScheme } from '@mui/material';
 import * as React from 'react'
 import { ElevationScroll } from './elevationScroll';
-import { DarkModeRounded, GrainRounded, LightModeRounded } from '@mui/icons-material';
+import { DarkModeRounded, GrainRounded, KeyboardArrowLeft, LightModeRounded } from '@mui/icons-material';
 import { useRouter } from 'next/navigation';
-import { ModalTracking } from './modalTracking';
 
 interface Props {
   window?: () => Window;
   children?: React.ReactElement<{ elevation?: number, color: string }>;
+  title: string
+  action?: any
+  back?: boolean
 }
 
 const Navbar = (props: Props) => {
     const router = useRouter()
     const { mode, setMode } = useColorScheme()
-    const [openTracking, setOpenTracking] = React.useState(false)
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
     const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -26,10 +28,6 @@ const Navbar = (props: Props) => {
     };
     return (
         <>
-            <ModalTracking 
-                open={openTracking}
-                onClose={() => setOpenTracking(false)}
-            />
             <ElevationScroll {...props}>
                 <AppBar color="primary">
                     <Container maxWidth="xl">
@@ -41,35 +39,40 @@ const Navbar = (props: Props) => {
                             }}
                         >
                             <Stack
-                                onClick={() => router.push('/')}
+                                gap={3}
                                 flexDirection="row"
                                 alignItems="center"
                             >
-                                <GrainRounded />
-                                <Typography sx={{ cursor: 'pointer' }} ml={1} variant="h6" component="div" flexGrow={1}>
-                                    Kelendil Cacau
-                                </Typography>
+                                {props.back && (
+                                    <IconButton onClick={() => router.push("/")}>
+                                        <KeyboardArrowLeft />
+                                    </IconButton>
+                                )}
+                                <Stack
+                                    flexDirection="row"
+                                    alignItems="center"
+                                >
+                                    <GrainRounded />
+                                    <Typography sx={{ cursor: 'pointer' }} ml={1} variant="h6" component="div" flexGrow={1}>
+                                        {props.title}
+                                    </Typography>
+                                </Stack>
                             </Stack>
                             <Stack
                                 gap={6}
                                 flexDirection="row"
                                 alignItems="center"
                             >
-                                <Button 
-                                    variant="text"
-                                    onClick={() => {
-                                        setOpenTracking(true)
-                                    }}
-                                >
-                                    Rastrear pedido
-                                </Button>                  
+                                {props?.action}                  
 
-                                <Divider
-                                    sx={{
-                                        height: 16
-                                    }}
-                                    orientation="vertical"
-                                />
+                                {props?.action && (
+                                    <Divider
+                                        sx={{
+                                            height: 16
+                                        }}
+                                        orientation="vertical"
+                                    />
+                                )}
 
                                 {mode && (
                                     <>
@@ -104,7 +107,6 @@ const Navbar = (props: Props) => {
                 </AppBar>
             </ElevationScroll>
             <Toolbar />
-
         </>
     )
 }

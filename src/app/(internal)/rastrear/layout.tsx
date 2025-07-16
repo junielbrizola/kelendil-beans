@@ -5,20 +5,16 @@ import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import { useColorScheme } from '@mui/material/styles';
 import { Navbar } from '@/components/navbar';
-import { ModalTracking } from '@/components/modalTracking';
-import { Button } from '@mui/material';
 
 interface Props {
   window?: () => Window;
   children?: React.ReactElement<{ elevation?: number, color: string }>;
 }
 
-export default function HomeLayout(props: Props) {
+export default function CheckoutLayout(props: Props) {
 
   const { mode, setMode } = useColorScheme()
 
-  const [openTracking, setOpenTracking] = React.useState(false)
-  
 
   React.useEffect(() => {
     if (mode === 'system') setMode('light')
@@ -26,23 +22,10 @@ export default function HomeLayout(props: Props) {
 
   return (
     <React.Fragment>
-      <ModalTracking 
-          open={openTracking}
-          onClose={() => setOpenTracking(false)}
-      />
       <Navbar 
         {...props} 
+        back
         title='Cacau'
-        action={(
-          <Button
-            variant="text"
-            onClick={() => {
-                setOpenTracking(true)
-            }}
-          >
-              Rastrear pedido
-          </Button>
-        )}
       />
       <Container maxWidth="xl">
         <Box sx={{ my: 30 }}>
