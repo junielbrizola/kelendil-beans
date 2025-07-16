@@ -1,5 +1,5 @@
 import { createTheme, responsiveFontSizes } from '@mui/material/styles';
-import { amber, grey, green, red, blue } from '@mui/material/colors';
+import { grey, green, red, blue } from '@mui/material/colors';
 
 export const theme = responsiveFontSizes(createTheme({
   colorSchemes: { light: true, dark: true },
@@ -20,7 +20,7 @@ export const theme = responsiveFontSizes(createTheme({
       contrastText: '#fff'
     },
     error:   { main: red[700] },
-    warning: { main: amber[700] },
+    warning: { main: '#FFC107', contrastText: grey[900] },
     info:    { main: blue[600] },
     success: { main: green[600] },
     background: {
@@ -34,25 +34,25 @@ export const theme = responsiveFontSizes(createTheme({
     divider: grey[200]
   },
   typography: {
-    fontFamily:        'var(--font-body), sans-serif',
-    fontSize:          14,
-    h1:                { fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '3rem', lineHeight: 1.2 },
-    h2:                { fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '2.5rem', lineHeight: 1.3 },
-    h3:                { fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '2rem', lineHeight: 1.4 },
-    h4:                { fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '1.75rem', lineHeight: 1.4 },
-    h5:                { fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '1.5rem', lineHeight: 1.5 },
-    h6:                { fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '1.25rem', lineHeight: 1.6 },
-    subtitle1:         { fontSize: '1rem', fontWeight: 500 },
-    subtitle2:         { fontSize: '0.875rem', fontWeight: 500 },
-    body1:             { fontSize: '1rem', lineHeight: 1.5 },
-    body2:             { fontSize: '0.875rem', lineHeight: 1.43 },
-    button:            { fontFamily: 'var(--font-body)', fontWeight: 600, textTransform: 'none' },
-    caption:           { fontSize: '0.75rem' },
-    overline:          { fontSize: '0.625rem', textTransform: 'uppercase', fontWeight: 500 }
+    fontFamily: 'var(--font-body, Roboto, Arial, sans-serif)',
+    fontSize: 14,
+    h1: { fontFamily: 'var(--font-heading, Roboto, Arial, sans-serif)', fontWeight: 700, fontSize: '3rem', lineHeight: 1.2 },
+    h2: { fontFamily: 'var(--font-heading, Roboto, Arial, sans-serif)', fontWeight: 700, fontSize: '2.5rem', lineHeight: 1.3 },
+    h3: { fontFamily: 'var(--font-heading, Roboto, Arial, sans-serif)', fontWeight: 700, fontSize: '2rem', lineHeight: 1.4 },
+    h4: { fontFamily: 'var(--font-heading, Roboto, Arial, sans-serif)', fontWeight: 700, fontSize: '1.75rem', lineHeight: 1.4 },
+    h5: { fontFamily: 'var(--font-heading, Roboto, Arial, sans-serif)', fontWeight: 700, fontSize: '1.5rem', lineHeight: 1.5 },
+    h6: { fontFamily: 'var(--font-heading, Roboto, Arial, sans-serif)', fontWeight: 700, fontSize: '1.25rem', lineHeight: 1.6 },
+    subtitle1: { fontSize: '1rem', fontWeight: 500 },
+    subtitle2: { fontSize: '0.875rem', fontWeight: 500 },
+    body1: { fontSize: '1rem', lineHeight: 1.5 },
+    body2: { fontSize: '0.875rem', lineHeight: 1.43 },
+    button: { fontFamily: 'var(--font-body, Roboto, Arial, sans-serif)', fontWeight: 600, textTransform: 'none' },
+    caption: { fontSize: '0.75rem' },
+    overline: { fontSize: '0.625rem', textTransform: 'uppercase', fontWeight: 500 }
   },
-  spacing: 4,       
+  spacing: 4,
   shape: {
-    borderRadius: 8 
+    borderRadius: 12
   },
   components: {
     MuiCssBaseline: {
@@ -69,18 +69,20 @@ export const theme = responsiveFontSizes(createTheme({
       },
       styleOverrides: {
         root: {
-          borderRadius: 6,
+          borderRadius: 8,
           textTransform: 'none',
-          padding: '8px 16px'
+          padding: '10px 20px'
         }
-      }
+      },
     },
     MuiCard: {
       defaultProps: { elevation: 2 },
       styleOverrides: {
         root: {
-          borderRadius: 12,
-          overflow: 'hidden'
+          borderRadius: 16,
+          overflow: 'hidden',
+          boxShadow: '0 2px 12px 0 rgba(110,80,60,0.06)',
+          marginBottom: '1.5rem'
         }
       }
     },
@@ -107,26 +109,19 @@ export const theme = responsiveFontSizes(createTheme({
     },
     MuiSkeleton: {
       styleOverrides: {
-        root: {
-          borderRadius: 4
-        }
+        root: { borderRadius: 4 }
       }
     },
     MuiLink: {
       defaultProps: { underline: 'hover' },
       styleOverrides: {
-        root: {
-          color: '#6D4C41'
-        }
+        root: { color: '#6D4C41' }
       }
     },
     MuiIconButton: {
       styleOverrides: {
-        root: {
-          borderRadius: 6
-        }
+        root: { borderRadius: 8 }
       }
     }
   }
 }));
-
