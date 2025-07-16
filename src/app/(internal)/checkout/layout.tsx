@@ -25,7 +25,7 @@ export default function CheckoutLayout(props: Props) {
       <Navbar 
         {...props} 
         back
-        title='Cacau'
+        title='Cacau / Checkout'
       />
       <Container maxWidth="xl">
         <Box sx={{ my: 30 }}>
