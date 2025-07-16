@@ -34,7 +34,7 @@ export default function HomeLayout(props: Props) {
         )}
       />
       <Container maxWidth="xl">
-        <Box sx={{ my: 30 }}>
+        <Box sx={{ my: 18 }}>
           {props.children}
         </Box>
       </Container>

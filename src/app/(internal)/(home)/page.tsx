@@ -7,7 +7,7 @@ import { ProductCard } from '@/components/productCard';
 export default function HomePage() {
   return (
     <Stack
-      gap={39}
+      spacing={39}
     >
       <ProductCard 
         title="CCN-51"
